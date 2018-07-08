@@ -2,7 +2,11 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const BASE_API_ENDPOINT = '/api/v1';
 
-const { loadGTFSDataFromFile, loadStopsWithTrip, loadStopsWithTimes } = require('./gtfs-helper');
+const {
+  loadGTFSDataFromFile,
+  loadStopsWithTrip,
+  loadStopsWithTimes
+} = require('./gtfs-helper');
 const db = require('./database');
 const app = express();
 
@@ -31,15 +35,29 @@ app.get(BASE_API_ENDPOINT + '/trips', async (req, res) => {
 app.get(BASE_API_ENDPOINT + '/trips/:routeId', async (req, res) => {
   const { routeId } = req.params;
   let trips = db.trips.filter(x => x.routeId === routeId);
+  let modifiedTrips = [];
 
-  // const compareBySequence (a, b) => {};
+  const compareBySequence = (a, b) => {
+    a = Number.parseInt(a);
+    b = Number.parseInt(b);
+    return a - b;
+  };
 
-  // for(let trip of trips) {
-  //   const stops = db.stopTimes.filter(x => x.tripId === trip.tripId);
+  for (let trip of trips) {
+    const stops = db.stopTimes
+      .filter(x => x.tripId === trip.tripId)
+      .sort(compareBySequence);
+    const first = stops[0].stopName;
+    const last = stops[stops.length - 1].stopName;
 
-  // }
+    const newTrip = Object.assign({}, trip, {
+      name: first + ' to ' + last
+    });
 
-  res.json(trips);
+    modifiedTrips.push(newTrip);
+  }
+
+  res.json(modifiedTrips);
 });
 
 app.get(BASE_API_ENDPOINT + '/stops', async (req, res) => {
