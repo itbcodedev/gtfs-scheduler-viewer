@@ -1,1 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #f6f6f6;
+}
+
+.navbar {
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+}
+
+.paper-card {
+  background: #fff;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  padding: 1.25rem;
+}
+
+.paper-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}

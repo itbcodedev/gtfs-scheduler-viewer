@@ -1,6 +1,8 @@
 const DATABASE = {
   agencies: [],
-  routes: []
+  routes: [],
+  trips: [],
+  stops: []
 };
 
 module.exports = DATABASE;

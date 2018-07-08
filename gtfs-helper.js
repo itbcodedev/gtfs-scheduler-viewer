@@ -33,6 +33,20 @@ function loadGTFSDataFromFile(filepath) {
   });
 }
 
+async function loadStops() {
+  const stops = await loadGTFSDataFromFile('./sample-feed/stops.txt');
+  const stop_times = await loadGTFSDataFromFile('./sample-feed/stop_times.txt');
+
+  const joinedStopTimes = [];
+  for (const stopTime of stop_times) {
+    const stop = stops.find(x => x.stopId === stopTime.stopId);
+    const newStopTime = Object.assign({}, stopTime, stop);
+    joinedStopTimes.push(newStopTime);
+  }
+
+  return joinedStopTimes;
+}
+
 async function loadTripsToRoute(routes) {
   const trips = await loadGTFSDataFromFile('./sample-feed/trips.txt');
   const stops = await loadGTFSDataFromFile('./sample-feed/stops.txt');
@@ -72,5 +86,6 @@ function toJsonNamingConvetion(str) {
 
 module.exports = {
   loadGTFSDataFromFile,
-  loadTripsToRoute
+  loadTripsToRoute,
+  loadStops
 };

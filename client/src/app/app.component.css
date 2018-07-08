@@ -1,0 +1,17 @@
+.container-fluid {
+  margin-top: 16px;
+  height: 100%;
+}
+
+.sidebar {
+  margin-bottom: 16px;
+}
+
+.map-container {
+  height: 100%;
+}
+
+.map-card {
+  max-width: 768px;
+  height: 80%;
+}
