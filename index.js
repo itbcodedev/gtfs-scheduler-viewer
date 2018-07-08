@@ -2,11 +2,7 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const BASE_API_ENDPOINT = '/api/v1';
 
-const {
-  loadGTFSDataFromFile,
-  loadTripsToRoute,
-  loadStops
-} = require('./gtfs-helper');
+const { loadGTFSDataFromFile, loadStopsWithTrip, loadStopsWithTimes } = require('./gtfs-helper');
 const db = require('./database');
 const app = express();
 
@@ -14,7 +10,8 @@ async function init() {
   db.agencies = await loadGTFSDataFromFile('./sample-feed/agency.txt');
   db.routes = await loadGTFSDataFromFile('./sample-feed/routes.txt');
   db.trips = await loadGTFSDataFromFile('./sample-feed/trips.txt');
-  db.stops = await loadGTFSDataFromFile('./sample-feed/stops.txt');
+  db.stopTimes = await loadStopsWithTimes();
+  db.stops = await loadStopsWithTrip();
 }
 
 init();
@@ -25,6 +22,38 @@ app.get(BASE_API_ENDPOINT + '/agencies', async (req, res) => {
 
 app.get(BASE_API_ENDPOINT + '/routes', async (req, res) => {
   res.json(db.routes);
+});
+
+app.get(BASE_API_ENDPOINT + '/trips', async (req, res) => {
+  res.json(db.trips);
+});
+
+app.get(BASE_API_ENDPOINT + '/trips/:routeId', async (req, res) => {
+  const { routeId } = req.params;
+  let trips = db.trips.filter(x => x.routeId === routeId);
+
+  // const compareBySequence (a, b) => {};
+
+  // for(let trip of trips) {
+  //   const stops = db.stopTimes.filter(x => x.tripId === trip.tripId);
+
+  // }
+
+  res.json(trips);
+});
+
+app.get(BASE_API_ENDPOINT + '/stops', async (req, res) => {
+  const { tripId, routeId } = req.query;
+
+  let routes = db.stops;
+  if (tripId) {
+    routes = routes.filter(x => x.tripId === tripId);
+  }
+  if (routeId) {
+    routes = routes.filter(x => x.routeId === routeId);
+  }
+
+  res.json(routes);
 });
 
 app.get(BASE_API_ENDPOINT + '/routes/:agencyId', async (req, res) => {

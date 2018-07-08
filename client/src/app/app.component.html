@@ -18,8 +18,17 @@
       <div>
         <h4>Routes</h4>
         <div class="list-group">
-          <a href="#" *ngFor="let route of routes" class="list-group-item list-group-item-action" (click)="onRouteClick($event, route)">{{route.routeLongName}}</a>
+          <a href="#" *ngFor="let route of routes" [ngClass]="{'active': route === selectedRoute}" class="list-group-item list-group-item-action"
+            (click)="onRouteClick($event, route)">{{route.routeLongName}}</a>
         </div>
+      </div>
+
+      <div>
+        <h5>Trips for {{selectedRoute ? selectedRoute.routeLongName : ''}}</h5>
+        <div class="list-group">
+            <a href="#" *ngFor="let trip of trips" [ngClass]="{'active': trip === selectedTrip}" class="list-group-item list-group-item-action"
+            (click)="onTripClick($event, trip)">{{trip.tripHeadsign}}</a>
+          </div>
       </div>
     </div>
 

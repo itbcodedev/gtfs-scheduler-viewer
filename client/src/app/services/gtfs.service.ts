@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Stop } from '../models/stop.model';
 import { Route } from '../models/route.model';
 import { Agency } from '../models/agency.model';
+import { Trip } from '../models/trip.model';
 
 const BASE_API_ENDPOINT = '/api/v1';
 
@@ -24,9 +25,15 @@ export class GTFSService {
       .toPromise();
   }
 
-  public getStopsByRoute(routeId: string): Promise<Stop[]> {
+  public getTripByRoute(routeId: string): Promise<Trip[]> {
     return this.http
-      .get<Stop[]>(`${BASE_API_ENDPOINT}/stops/${routeId}`)
+      .get<Trip[]>(`${BASE_API_ENDPOINT}/trips/${routeId}`)
+      .toPromise();
+  }
+
+  public getStopByTrip(tripId: string): Promise<Stop[]> {
+    return this.http
+      .get<Stop[]>(`${BASE_API_ENDPOINT}/stops?tripId=${tripId}`)
       .toPromise();
   }
 }
