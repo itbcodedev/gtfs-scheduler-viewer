@@ -26,3 +26,20 @@ body {
 .paper-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
+
+.service-availability {
+  padding: 8px 0;
+}
+
+.service-availability > span {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #e6e6e6;
+  text-align: center;
+}
+
+.service-availability > span.available {
+  background-color: #00e5b1;
+}

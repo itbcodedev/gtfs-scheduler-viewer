@@ -1,5 +1,14 @@
 const isStringNullOrEmpty = str => str === null || str.length === 0;
-const numericFields = { stopSequence: 1 };
+const numericFields = {
+  stopSequence: 1,
+  monday: 1,
+  tuesday: 1,
+  wednesday: 1,
+  thursday: 1,
+  friday: 1,
+  saturday: 1,
+  sunday: 1
+};
 const isNumericField = field => (numericFields[field] ? true : false);
 
 function loadGTFSDataFromFile(filepath) {

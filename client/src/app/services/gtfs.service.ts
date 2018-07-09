@@ -6,6 +6,7 @@ import { Stop } from '../models/stop.model';
 import { Route } from '../models/route.model';
 import { Agency } from '../models/agency.model';
 import { Trip } from '../models/trip.model';
+import { Calendar } from '../models/calendar.model';
 
 const BASE_API_ENDPOINT = '/api/v1';
 
@@ -34,6 +35,12 @@ export class GTFSService {
   public getStopByTrip(tripId: string): Promise<Stop[]> {
     return this.http
       .get<Stop[]>(`${BASE_API_ENDPOINT}/stops?tripId=${tripId}`)
+      .toPromise();
+  }
+
+  public getCalendarByService(serviceId: string): Promise<Calendar> {
+    return this.http
+      .get<Calendar>(`${BASE_API_ENDPOINT}/calendar?serviceId=${serviceId}`)
       .toPromise();
   }
 }

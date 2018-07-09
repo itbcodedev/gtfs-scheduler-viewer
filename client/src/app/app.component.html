@@ -15,7 +15,7 @@
         </select>
       </div>
 
-      <div>
+      <div *ngIf="routes.length > 0">
         <h4>Routes</h4>
         <div class="list-group">
           <a href="#" *ngFor="let route of routes" [ngClass]="{'active': route === selectedRoute}" class="list-group-item list-group-item-action"
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div>
+      <div *ngIf="trips.length > 0">
         <h5>Trips for {{selectedRoute ? selectedRoute.routeLongName : ''}}</h5>
         <div class="list-group">
           <a href="#" *ngFor="let trip of trips" [ngClass]="{'active': trip === selectedTrip}" class="list-group-item list-group-item-action"

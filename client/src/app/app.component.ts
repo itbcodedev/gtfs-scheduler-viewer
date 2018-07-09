@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { Agency } from './models/agency.model';
 import { Route } from './models/route.model';
 import { Trip } from './models/trip.model';
+import { Calendar } from './models/calendar.model';
 
 @Component({
   selector: 'app-root',
@@ -22,11 +23,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   private gmapContainer: google.maps.Map;
   private markers: google.maps.Marker[] = [];
   private tripPath: google.maps.Polyline;
-  private agencies: Agency[];
-  private routes: Route[];
+  private agencies: Agency[] = [];
+  private routes: Route[] = [];
   private selectedRoute: Route;
   private selectedTrip: Trip;
-  private trips: Trip[];
+  private trips: Trip[] = [];
   private stops: Stop[];
 
   constructor(private gtfsService: GTFSService) {}
@@ -38,7 +39,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const options = {
       center: new google.maps.LatLng(36.868446, -116.784582),
-      zoom: 16
+      zoom: 10
     };
 
     this.gmapContainer = new google.maps.Map(
@@ -66,7 +67,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   async onMarkerClick(map, marker, stop) {
-    console.log(stop);
+    const calendar: Calendar = await this.gtfsService.getCalendarByService(
+      this.selectedTrip.serviceId
+    );
+    console.log(calendar);
     let stopsTimes: Stop[] = await this.gtfsService.getStopByTrip(stop.tripId);
     stopsTimes = stopsTimes.filter(
       x => stop.stopId !== x.stopId && x.stopSequence > stop.stopSequence
@@ -82,24 +86,41 @@ export class AppComponent implements OnInit, AfterViewInit {
       `;
     }
 
+    const table = `
+    <table class="table table-sm">
+      <thead>
+        <tr>
+        <th>Destination Name</th>
+        <th>Arrival Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${scheduler}
+      </tbody>
+    </table>`;
+
     const contentString = `
     <div>
       <div class="header">
         <h6>Stop Name: ${stop.stopName}</h6>
-        <div>Depature Time: ${stop.departureTime}</div>
+        ${
+          stop.stopSequence > 1
+            ? `<div>Arrival Time: ${stop.arrivalTime}</div>`
+            : `<div>Depature Time: ${stop.departureTime}</div>`
+        }
+      </div>
+      <div class="service-availability">
+        Days Available
+        <span ${calendar.sunday ? 'class="available"' : ''} >S</span>
+        <span ${calendar.monday ? 'class="available"' : ''} >M</span>
+        <span ${calendar.tuesday ? 'class="available"' : ''} >T</span>
+        <span ${calendar.wednesday ? 'class="available"' : ''} >W</span>
+        <span ${calendar.thursday ? 'class="available"' : ''} >T</span>
+        <span ${calendar.friday ? 'class="available"' : ''} >F</span>
+        <span ${calendar.saturday ? 'class="available"' : ''} >S</span>
       </div>
       <br/>
-      <table class="table table-sm">
-        <thead>
-          <tr>
-          <th>Destination Name</th>
-          <th>Arrival Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${scheduler}
-        </tbody>
-      </table>
+      ${stopsTimes.length > 0 ? table : ''}
     </div>
     `;
 
