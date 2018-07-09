@@ -5,7 +5,7 @@ GTFS feed on a map. This application exposes the GTFS content through a RESTFUL 
 service which is consumed by the angular web app. Since this is just an example
 The server application is just reading a mock feed (from the local directory).
 
-![Web Application](webapp.png?raw=true 'Web Application')
+![Web Application](app.png?raw=true 'Web Application')
 
 ## Getting Started
 
