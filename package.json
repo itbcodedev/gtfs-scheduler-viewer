@@ -1,7 +1,7 @@
 {
   "name": "gtfs-scheduler-viewer",
   "version": "1.0.0",
-  "description": "",
+  "description": "GTFS Scheduler Viewer is an Angular web application for viewing the content of a GTFS feed on a map. This application exposes the GTFS content through a RESTFUL API service which is consumed by the angular web app.",
   "main": "index.js",
   "engines": {
     "node": "8.9.4",
@@ -12,10 +12,14 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Max Medina",
+  "keywords": [
+    "gtfs",
+    "angular",
+    "node"
+  ],
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.3"
