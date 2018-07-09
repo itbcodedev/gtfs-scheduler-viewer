@@ -1,4 +1,6 @@
 const isStringNullOrEmpty = str => str === null || str.length === 0;
+const numericFields = { stopSequence: 1 };
+const isNumericField = field => (numericFields[field] ? true : false);
 
 function loadGTFSDataFromFile(filepath) {
   return new Promise((resolve, reject) => {
@@ -18,7 +20,9 @@ function loadGTFSDataFromFile(filepath) {
         let resource = {};
         for (let i = 0; i < fields.length; i++) {
           const name = fields[i];
-          resource[name] = cells[i];
+          resource[name] = isNumericField(name)
+            ? Number.parseInt(cells[i])
+            : cells[i];
         }
 
         data.push(resource);

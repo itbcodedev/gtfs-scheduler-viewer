@@ -6,4 +6,7 @@ export interface Stop {
   stopLon: number;
   zoneId: string;
   stopUrl: string;
+  arrivalTime: string;
+  departureTime: string;
+  stopSequence: number;
 }

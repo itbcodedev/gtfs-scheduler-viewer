@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const options = {
       center: new google.maps.LatLng(36.868446, -116.784582),
-      zoom: 8
+      zoom: 16
     };
 
     this.gmapContainer = new google.maps.Map(
@@ -63,6 +63,51 @@ export class AppComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     this.selectedTrip = trip;
     this.getStops(trip.tripId);
+  }
+
+  async onMarkerClick(map, marker, stop) {
+    console.log(stop);
+    let stopsTimes: Stop[] = await this.gtfsService.getStopByTrip(stop.tripId);
+    stopsTimes = stopsTimes.filter(
+      x => stop.stopId !== x.stopId && x.stopSequence > stop.stopSequence
+    );
+
+    let scheduler = '';
+    for (const stopTime of stopsTimes) {
+      scheduler += `
+      <tr>
+        <td>${stopTime.stopName}</td>
+        <td>${stopTime.arrivalTime}</td>
+      </tr>
+      `;
+    }
+
+    const contentString = `
+    <div>
+      <div class="header">
+        <h6>Stop Name: ${stop.stopName}</h6>
+        <div>Depature Time: ${stop.departureTime}</div>
+      </div>
+      <br/>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+          <th>Destination Name</th>
+          <th>Arrival Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${scheduler}
+        </tbody>
+      </table>
+    </div>
+    `;
+
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString.trim()
+    });
+
+    infowindow.open(map, marker);
   }
 
   private async getRoutes(agencyId: string) {
@@ -90,10 +135,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       const position = new google.maps.LatLng(stop.stopLat, stop.stopLon);
       const marker = new google.maps.Marker({
         position,
-        label: stop.stopName,
         map: this.gmapContainer
       });
-
+      marker.addListener('click', () =>
+        this.onMarkerClick(this.gmapContainer, marker, stop)
+      );
       coordinates.push(position);
       this.markers.push(marker);
     }

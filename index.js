@@ -14,8 +14,8 @@ async function init() {
   db.agencies = await loadGTFSDataFromFile('./sample-feed/agency.txt');
   db.routes = await loadGTFSDataFromFile('./sample-feed/routes.txt');
   db.trips = await loadGTFSDataFromFile('./sample-feed/trips.txt');
-  db.stopTimes = await loadStopsWithTimes();
-  db.stops = await loadStopsWithTrip();
+  db.stopWithstopTimes = await loadStopsWithTimes();
+  db.stopsWithTrip = await loadStopsWithTrip();
 }
 
 init();
@@ -44,7 +44,7 @@ app.get(BASE_API_ENDPOINT + '/trips/:routeId', async (req, res) => {
   };
 
   for (let trip of trips) {
-    const stops = db.stopTimes
+    const stops = db.stopWithstopTimes
       .filter(x => x.tripId === trip.tripId)
       .sort(compareBySequence);
     const first = stops[0].stopName;
@@ -61,14 +61,17 @@ app.get(BASE_API_ENDPOINT + '/trips/:routeId', async (req, res) => {
 });
 
 app.get(BASE_API_ENDPOINT + '/stops', async (req, res) => {
-  const { tripId, routeId } = req.query;
+  const { tripId, routeId, stopId } = req.query;
 
-  let routes = db.stops;
+  let routes = db.stopWithstopTimes;
   if (tripId) {
     routes = routes.filter(x => x.tripId === tripId);
   }
   if (routeId) {
     routes = routes.filter(x => x.routeId === routeId);
+  }
+  if (stopId) {
+    routes = routes.filter(x => x.stopId === stopId);
   }
 
   res.json(routes);
